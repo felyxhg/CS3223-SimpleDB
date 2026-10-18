@@ -3,6 +3,7 @@ package simpledb.parse;
 import java.util.*;
 
 import simpledb.index.IndexType;
+import simpledb.materialize.*;
 import simpledb.query.*;
 import simpledb.record.*;
 
@@ -80,13 +81,22 @@ public class Parser {
    
    public QueryData query() {
       lex.eatKeyword("select");
-      List<String> fields = selectList();
+      List<AggregationFn> aggfns = new ArrayList<>();
+      List<String> selectexpressions = new ArrayList<>();
+      List<String> fields = selectList(aggfns, selectexpressions);
       lex.eatKeyword("from");
       Collection<String> tables = tableList();
       Predicate pred = new Predicate();
       if (lex.matchKeyword("where")) {
          lex.eatKeyword("where");
          pred = predicate();
+      }
+
+      List<String> groupfields = new ArrayList<>();
+      if (lex.matchKeyword("group")) {
+         lex.eatKeyword("group");
+         lex.eatKeyword("by");
+         groupfields = fieldList();
       }
 
       Order order = new Order();
@@ -96,17 +106,56 @@ public class Parser {
          order = order();
       }
 
-      return new QueryData(fields, tables, pred, order);
+      if (!aggfns.isEmpty() || !groupfields.isEmpty()) {
+         for (String fldname : fields)
+            if (!groupfields.contains(fldname) && !isAggregateField(fldname, aggfns))
+               throw new BadSyntaxException();
+      }
+
+      return new QueryData(fields, tables, pred, order, groupfields, aggfns, selectexpressions);
    }
-   
-   private List<String> selectList() {
+
+   private List<String> selectList(List<AggregationFn> aggfns, List<String> selectexpressions) {
       List<String> L = new ArrayList<String>();
-      L.add(field());
+      if (lex.matchKeyword("sum") || lex.matchKeyword("avg") || lex.matchKeyword("count")
+            || lex.matchKeyword("min") || lex.matchKeyword("max")) {
+         String fn = lex.matchKeyword("sum") ? "sum" : lex.matchKeyword("avg") ? "avg"
+               : lex.matchKeyword("count") ? "count" : lex.matchKeyword("min") ? "min" : "max";
+         lex.eatKeyword(fn);
+         lex.eatDelim('(');
+         String fldname = field();
+         lex.eatDelim(')');
+         AggregationFn aggfn = createAggregationFn(fn, fldname);
+         aggfns.add(aggfn);
+         L.add(aggfn.fieldName());
+         selectexpressions.add(fn + "(" + fldname + ")");
+      } else {
+         String fldname = field();
+         L.add(fldname);
+         selectexpressions.add(fldname);
+      }
       if (lex.matchDelim(',')) {
          lex.eatDelim(',');
-         L.addAll(selectList());
+         L.addAll(selectList(aggfns, selectexpressions));
       }
       return L;
+   }
+
+   private AggregationFn createAggregationFn(String fn, String fldname) {
+      switch (fn) {
+         case "sum": return new SumFn(fldname);
+         case "avg": return new AvgFn(fldname);
+         case "count": return new CountFn(fldname);
+         case "min": return new MinFn(fldname);
+         default: return new MaxFn(fldname);
+      }
+   }
+
+   private boolean isAggregateField(String fldname, List<AggregationFn> aggfns) {
+      for (AggregationFn fn : aggfns)
+         if (fn.fieldName().equals(fldname))
+            return true;
+      return false;
    }
    
    private Collection<String> tableList() {

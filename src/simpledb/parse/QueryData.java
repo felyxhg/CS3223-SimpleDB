@@ -2,6 +2,7 @@ package simpledb.parse;
 
 import java.util.*;
 
+import simpledb.materialize.AggregationFn;
 import simpledb.query.*;
 
 /**
@@ -13,15 +14,26 @@ public class QueryData {
    private Collection<String> tables;
    private Predicate pred;
    private Order order;
+   private List<String> groupfields;
+   private List<AggregationFn> aggfns;
+   private List<String> selectexpressions;
    
    /**
     * Saves the field and table list and predicate and order.
     */
    public QueryData(List<String> fields, Collection<String> tables, Predicate pred, Order order) {
+      this(fields, tables, pred, order, Collections.emptyList(), Collections.emptyList(), fields);
+   }
+
+   public QueryData(List<String> fields, Collection<String> tables, Predicate pred, Order order,
+         List<String> groupfields, List<AggregationFn> aggfns, List<String> selectexpressions) {
       this.fields = fields;
       this.tables = tables;
       this.pred = pred;
       this.order = order;
+      this.groupfields = groupfields;
+      this.aggfns = aggfns;
+      this.selectexpressions = selectexpressions;
    }
    
    /**
@@ -57,11 +69,19 @@ public class QueryData {
    public Order order() {
       return order;
    }
+
+   public List<String> groupfields() {
+      return groupfields;
+   }
+
+   public List<AggregationFn> aggfns() {
+      return aggfns;
+   }
    
    public String toString() {
       String result = "select ";
-      for (String fldname : fields)
-         result += fldname + ", ";
+      for (String expression : selectexpressions)
+         result += expression + ", ";
       result = result.substring(0, result.length()-2); //remove final comma
       result += " from ";
       for (String tblname : tables)
@@ -70,6 +90,12 @@ public class QueryData {
       String predstring = pred.toString();
       if (!predstring.equals(""))
          result += " where " + predstring;
+      if (!groupfields.isEmpty()) {
+         result += " group by ";
+         for (String fldname : groupfields)
+            result += fldname + ", ";
+         result = result.substring(0, result.length()-2);
+      }
       if (!order.getPairs().isEmpty()) {
          result += " order by ";
          for (OrderPair p : order.getPairs())

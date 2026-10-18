@@ -1,6 +1,7 @@
 package simpledb.opt;
 
 import java.util.*;
+import simpledb.materialize.GroupByPlan;
 import simpledb.materialize.SortPlan;
 import simpledb.tx.Transaction;
 import simpledb.metadata.MetadataMgr;
@@ -47,6 +48,9 @@ public class HeuristicQueryPlanner implements QueryPlanner {
             currentplan = getLowestProductPlan(currentplan);
       }
       
+      if (!data.aggfns().isEmpty() || !data.groupfields().isEmpty())
+         currentplan = new GroupByPlan(tx, currentplan, data.groupfields(), data.aggfns());
+
       // Step 4.  Project on the field names and return
       Plan p = new ProjectPlan(currentplan, data.fields());
       if (!data.order().getPairs().isEmpty()) {
