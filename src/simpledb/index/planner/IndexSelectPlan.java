@@ -76,4 +76,10 @@ public class IndexSelectPlan implements Plan {
    public Schema schema() {
       return p.schema(); 
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "IndexSelect [" + ii.getFieldName() + " = " + val + " using " + ii.getIndexType() + "]")
+              + p.subtreeString(indentation + 1);
+   }
 }

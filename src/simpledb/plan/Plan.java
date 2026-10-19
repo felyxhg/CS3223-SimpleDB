@@ -45,4 +45,24 @@ public interface Plan {
     * @return the query's schema
     */
    public Schema schema();
+
+   /**
+    * Returns a query plan string of the subtree
+    * @param indentation indentation depth of the string in the total plan string
+    * @return String representation of plan of the subtree
+    */
+   public String  subtreeString(int indentation);
+
+   /**
+    * Returns one line of the query plan string,
+    * consisting of the indentation, the description
+    * of this node and its estimated costs.
+    * @param indentation indentation depth of the line
+    * @param description the operator name and its details
+    * @return the formatted line
+    */
+   default String planLine(int indentation, String description) {
+      return "  ".repeat(indentation) + description
+              + " (blocks=" + blocksAccessed() + ", records=" + recordsOutput() + ")\n";
+   }
 }

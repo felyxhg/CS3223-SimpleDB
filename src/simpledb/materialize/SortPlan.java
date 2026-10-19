@@ -84,7 +84,12 @@ public class SortPlan implements Plan {
    public Schema schema() {
       return sch;
    }
-   
+
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "Sort [" + comp.toString() + "]") + p.subtreeString(indentation + 1);
+   }
+
    private List<TempTable> splitIntoRuns(Scan src) {
       List<TempTable> temps = new ArrayList<>();
       src.beforeFirst();

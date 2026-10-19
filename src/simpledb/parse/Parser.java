@@ -81,6 +81,13 @@ public class Parser {
    
    public QueryData query() {
       lex.eatKeyword("select");
+
+      boolean isDistinct = false;
+      if (lex.matchKeyword("distinct")) {
+         isDistinct = true;
+         lex.eatKeyword("distinct");
+      }
+
       List<AggregationFn> aggfns = new ArrayList<>();
       List<String> selectexpressions = new ArrayList<>();
       List<String> fields = selectList(aggfns, selectexpressions);
@@ -112,7 +119,7 @@ public class Parser {
                throw new BadSyntaxException();
       }
 
-      return new QueryData(fields, tables, pred, order, groupfields, aggfns, selectexpressions);
+      return new QueryData(fields, tables, pred, order, groupfields, aggfns, selectexpressions, isDistinct);
    }
 
    private List<String> selectList(List<AggregationFn> aggfns, List<String> selectexpressions) {

@@ -98,6 +98,13 @@ public class MultibufferProductPlan implements Plan {
       return schema;
    }
 
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "MultibufferProduct")
+              + lhs.subtreeString(indentation + 1)
+              + rhs.subtreeString(indentation + 1);
+   }
+
    private TempTable copyRecordsFrom(Plan p) {
       Scan   src = p.open(); 
       Schema sch = p.schema();

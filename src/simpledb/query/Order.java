@@ -6,6 +6,7 @@ import simpledb.record.Schema;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A order is a list of attributes and ordering pairs
@@ -43,7 +44,25 @@ public class Order {
       pairs.addAll(order.pairs);
    }
 
+   /**
+    * Return true if the specified field is
+    * one of the fields of the order.
+    * @param fldname the name of the field
+    * @return true if the field is in the order
+    */
+   public boolean hasField(String fldname) {
+      for (OrderPair pair : pairs)
+         if (pair.getFldname().equals(fldname))
+            return true;
+      return false;
+   }
+
    public List<OrderPair> getPairs() {
       return pairs;
+   }
+
+   @Override
+   public String toString() {
+      return pairs.stream().map(OrderPair::toString).collect(Collectors.joining(", "));
    }
 }

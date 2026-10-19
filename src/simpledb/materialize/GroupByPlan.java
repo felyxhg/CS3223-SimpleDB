@@ -104,4 +104,13 @@ public class GroupByPlan implements Plan {
    public Schema schema() {
       return sch;
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+      List<String> aggnames = new ArrayList<>();
+      for (AggregationFn fn : aggfns)
+         aggnames.add(fn.fieldName());
+      return planLine(indentation, "GroupBy [" + String.join(", ", groupfields) + "] Aggregates [" + String.join(", ", aggnames) + "]")
+              + p.subtreeString(indentation + 1);
+   }
 }
