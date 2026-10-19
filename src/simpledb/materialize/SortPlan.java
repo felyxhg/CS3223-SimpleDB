@@ -55,9 +55,8 @@ public class SortPlan implements Plan {
     * @see simpledb.plan.Plan#blocksAccessed()
     */
    public int blocksAccessed() {
-      // does not include the one-time cost of sorting
       Plan mp = new MaterializePlan(tx, p); // not opened; just for analysis
-      return mp.blocksAccessed();
+      return p.blocksAccessed() + mp.blocksAccessed();
    }
    
    /**
