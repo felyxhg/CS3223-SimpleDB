@@ -70,11 +70,11 @@ class TablePlanner {
       Predicate joinpred = mypred.joinSubPred(myschema, currsch);
       if (joinpred == null)
          return null;
-      Plan p1 = makeIndexJoin(current, currsch);
-      Plan p2 = makeSortMergeJoin(current, currsch);
-      Plan p3 = makeHashJoin(current, currsch);
-//      Plan p3 = makeProductJoin(current, currsch);
-      Plan p4 = makeNestedLoopJoinPlan(current, joinpred);
+
+      Plan p1 = HeuristicQueryPlanner.indexJoinEnabled ? makeIndexJoin(current, currsch) : null;
+      Plan p2 = HeuristicQueryPlanner.mergeJoinEnabled ? makeSortMergeJoin(current, currsch) : null;
+      Plan p3 = HeuristicQueryPlanner.hashJoinEnabled ? makeHashJoin(current, currsch) : null;
+      Plan p4 = HeuristicQueryPlanner.nestedLoopJoinEnabled ? makeNestedLoopJoinPlan(current, joinpred) : null;
 
       Plan bestplan = null;
       for (Plan p : Arrays.asList(p1, p2, p3, p4)) {
@@ -82,6 +82,9 @@ class TablePlanner {
             bestplan = p;
          }
       }
+
+      if (bestplan == null)
+         bestplan = makeNestedLoopJoinPlan(current, joinpred);
 
       return bestplan;
    }

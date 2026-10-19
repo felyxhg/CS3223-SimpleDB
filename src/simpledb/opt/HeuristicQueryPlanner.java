@@ -17,6 +17,10 @@ import simpledb.plan.*;
 public class HeuristicQueryPlanner implements QueryPlanner {
    private Collection<TablePlanner> tableplanners = new ArrayList<>();
    private MetadataMgr mdm;
+   public static boolean indexJoinEnabled = true;
+   public static boolean mergeJoinEnabled = true;
+   public static boolean hashJoinEnabled = true;
+   public static boolean nestedLoopJoinEnabled = true;
    
    public HeuristicQueryPlanner(MetadataMgr mdm) {
       this.mdm = mdm;

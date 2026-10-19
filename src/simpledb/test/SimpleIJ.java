@@ -8,6 +8,7 @@ import simpledb.query.Scan;
 import simpledb.record.Schema;
 import simpledb.server.SimpleDB;
 import simpledb.tx.Transaction;
+import simpledb.opt.HeuristicQueryPlanner;
 
 import java.sql.*;
 import java.util.Scanner;
@@ -31,6 +32,10 @@ public class SimpleIJ {
                break;
             else if (cmd.startsWith("select"))
                doQuery(planner, tx, cmd);
+            else if (cmd.startsWith("joins"))
+               setJoinMethods(cmd);
+            else if (cmd.startsWith("time"))
+               doTimedQuery(planner, tx, cmd.substring(4).trim());
             else
                doUpdate(planner, tx, cmd);
             System.out.print("\nSQL> ");
@@ -90,6 +95,46 @@ public class SimpleIJ {
          if (s != null) {
             s.close();
          }
+      }
+   }
+
+   private static void setJoinMethods(String cmd) {
+      String methods = cmd.substring(5);
+      boolean all = methods.contains("all");
+      HeuristicQueryPlanner.indexJoinEnabled = all || methods.contains("index");
+      HeuristicQueryPlanner.mergeJoinEnabled = all || methods.contains("merge");
+      HeuristicQueryPlanner.hashJoinEnabled = all || methods.contains("hash");
+      HeuristicQueryPlanner.nestedLoopJoinEnabled = all || methods.contains("nested");
+      System.out.println("index=" + HeuristicQueryPlanner.indexJoinEnabled
+              + ", merge=" + HeuristicQueryPlanner.mergeJoinEnabled
+              + ", hash=" + HeuristicQueryPlanner.hashJoinEnabled
+              + ", nested=" + HeuristicQueryPlanner.nestedLoopJoinEnabled);
+   }
+
+   private static void doTimedQuery(Planner planner, Transaction tx, String cmd) {
+      Scan s = null;
+      try {
+         Plan plan = planner.createQueryPlan(cmd, tx);
+         System.out.println("Query plan:");
+         System.out.print(plan.subtreeString(0) + "\n");
+
+         long start = System.nanoTime();
+         s = plan.open();
+         int count = 0;
+         while (s.next()) {
+            for (String fldname : plan.schema().fields())
+               s.getVal(fldname);
+            count++;
+         }
+         long elapsed = System.nanoTime() - start;
+         System.out.println(count + " records in " + (elapsed / 1000000.0) + " ms");
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+      finally {
+         if (s != null)
+            s.close();
       }
    }
 
