@@ -44,6 +44,19 @@ public class Order {
       pairs.addAll(order.pairs);
    }
 
+   /**
+    * Return true if the specified field is
+    * one of the fields of the order.
+    * @param fldname the name of the field
+    * @return true if the field is in the order
+    */
+   public boolean hasField(String fldname) {
+      for (OrderPair pair : pairs)
+         if (pair.getFldname().equals(fldname))
+            return true;
+      return false;
+   }
+
    public List<OrderPair> getPairs() {
       return pairs;
    }

@@ -27,6 +27,26 @@ public class DistinctPlan implements Plan {
       this.p = new SortPlan(tx, p, new Order(p.schema().fields()));
 
    }
+
+   /**
+    * Create a distinct plan for the underlying query,
+    * whose output is sorted by the specified order.
+    * The records are sorted by the fields of the order first
+    * and then by the remaining fields, so that duplicate
+    * records are still next to each other and no
+    * additional sort is needed.
+    * @param p a plan for the underlying query
+    * @param order the order of the output
+    * @param tx the calling transaction
+    */
+   public DistinctPlan(Transaction tx, Plan p, Order order) {
+      Order sortorder = new Order();
+      sortorder.conjoinWith(order);
+      for (String fldname : p.schema().fields())
+         if (!order.hasField(fldname))
+            sortorder.conjoinWith(new Order(fldname));
+      this.p = new SortPlan(tx, p, sortorder);
+   }
    
    /**
     * This method opens a sort plan for the specified plan.

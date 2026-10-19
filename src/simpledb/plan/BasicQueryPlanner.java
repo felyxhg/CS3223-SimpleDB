@@ -52,12 +52,11 @@ public class BasicQueryPlanner implements QueryPlanner {
       
       //Step 4: Project on the field names
       p = new ProjectPlan(p, data.fields());
-      if (data.isDistinct()) {
-          p = new DistinctPlan(tx, p);
-      }
-      if (!data.order().getPairs().isEmpty()) {
-          p = new SortPlan(tx, p, data.order());
-      }
+       if (data.isDistinct()) {
+           p = new DistinctPlan(tx, p, data.order());
+       } else if (!data.order().getPairs().isEmpty()) {
+           p = new SortPlan(tx, p, data.order());
+       }
 
       return p;
    }
