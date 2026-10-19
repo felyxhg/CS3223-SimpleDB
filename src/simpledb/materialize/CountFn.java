@@ -39,7 +39,12 @@ public class CountFn implements AggregationFn {
    public void processNext(Scan s) {
       count++;
    }
-   
+
+   @Override
+   public String inputFieldName() {
+      return fldname;
+   }
+
    /**
     * Return the field's name, prepended by "countof".
     * @see simpledb.materialize.AggregationFn#fieldName()

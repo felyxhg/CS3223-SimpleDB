@@ -45,6 +45,11 @@ public class AvgFn implements AggregationFn {
 		totalsum += s.getInt(fldname);
 	}
 
+	@Override
+	public String inputFieldName() {
+		return fldname;
+	}
+
 	/**
 	 * Return the field's name, prepended by "averageof".
 	 * 

@@ -22,6 +22,12 @@ public interface AggregationFn {
     * @param s the scan to aggregate over.
     */
    void processNext(Scan s);
+
+   /**
+    * Return the name of the input field.
+    * @return the name of the input field
+    */
+   String inputFieldName();
    
    /**
     * Return the name of the new aggregation field.

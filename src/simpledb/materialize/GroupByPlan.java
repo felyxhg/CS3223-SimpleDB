@@ -33,8 +33,14 @@ public class GroupByPlan implements Plan {
       this.aggfns = aggfns;
       for (String fldname : groupfields)
          sch.add(fldname, p.schema());
-      for (AggregationFn fn : aggfns)
-         sch.addIntField(fn.fieldName());
+      for (AggregationFn fn : aggfns) {
+         String in = fn.inputFieldName();
+         if (fn instanceof MinFn || fn instanceof MaxFn) {
+            sch.addField(fn.fieldName(), p.schema().type(in), p.schema().length(in));
+         } else {
+            sch.addIntField(fn.fieldName());
+         }
+      }
    }
    
    /**

@@ -42,6 +42,11 @@ public class MinFn implements AggregationFn {
 			val = newval;
 	}
 
+	@Override
+	public String inputFieldName() {
+		return fldname;
+	}
+
 	/**
 	 * Return the field's name, prepended by "minof".
 	 * 

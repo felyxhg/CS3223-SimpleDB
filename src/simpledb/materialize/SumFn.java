@@ -42,6 +42,11 @@ public class SumFn implements AggregationFn {
 		totalsum += s.getInt(fldname);
 	}
 
+	@Override
+	public String inputFieldName() {
+		return fldname;
+	}
+
 	/**
 	 * Return the field's name, prepended by "sumof".
 	 * 

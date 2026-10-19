@@ -37,7 +37,12 @@ public class MaxFn implements AggregationFn {
       if (newval.compareTo(val) > 0)
          val = newval;
    }
-   
+
+   @Override
+   public String inputFieldName() {
+      return fldname;
+   }
+
    /**
     * Return the field's name, prepended by "maxof".
     * @see simpledb.materialize.AggregationFn#fieldName()
