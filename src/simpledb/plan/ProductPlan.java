@@ -76,4 +76,11 @@ public class ProductPlan implements Plan {
    public Schema schema() {
       return schema;
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "Product")
+              + p1.subtreeString(indentation + 1)
+              + p2.subtreeString(indentation + 1);
+   }
 }

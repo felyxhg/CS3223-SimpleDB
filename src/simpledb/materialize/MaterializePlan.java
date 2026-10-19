@@ -84,4 +84,9 @@ public class MaterializePlan implements Plan {
    public Schema schema() {
       return srcplan.schema();
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "Materialize") + srcplan.subtreeString(indentation + 1);
+   }
 }

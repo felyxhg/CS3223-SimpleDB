@@ -38,4 +38,9 @@ public class OptimizedProductPlan implements Plan {
    public Schema schema() {
       return bestplan.schema();
    }
+
+    @Override
+    public String subtreeString(int indentation) {
+        return bestplan.subtreeString(indentation);
+    }
 }

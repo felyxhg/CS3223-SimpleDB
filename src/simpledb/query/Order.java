@@ -6,6 +6,7 @@ import simpledb.record.Schema;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A order is a list of attributes and ordering pairs
@@ -45,5 +46,10 @@ public class Order {
 
    public List<OrderPair> getPairs() {
       return pairs;
+   }
+
+   @Override
+   public String toString() {
+      return pairs.stream().map(OrderPair::toString).collect(Collectors.joining(", "));
    }
 }

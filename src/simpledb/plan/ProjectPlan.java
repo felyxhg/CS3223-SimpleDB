@@ -69,4 +69,9 @@ public class ProjectPlan implements Plan {
    public Schema schema() {
       return schema;
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "Project [" + String.join(", ", schema.fields()) + "]") + p.subtreeString(indentation + 1);
+   }
 }

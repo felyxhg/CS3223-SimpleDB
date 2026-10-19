@@ -83,4 +83,9 @@ public class SelectPlan implements Plan {
    public Schema schema() {
       return p.schema();
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "Select [" + pred.toString() + "]") + p.subtreeString(indentation + 1);
+   }
 }

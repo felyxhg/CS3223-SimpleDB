@@ -129,4 +129,11 @@ public class HashJoinPlan implements Plan {
 	public Schema schema() {
 		return sch;
 	}
+
+	@Override
+	public String subtreeString(int indentation) {
+		return planLine(indentation, "HashJoin [" + fldname1 + " = " + fldname2 + "]")
+				+ p1.subtreeString(indentation + 1)
+				+ p2.subtreeString(indentation + 1);
+	}
 }

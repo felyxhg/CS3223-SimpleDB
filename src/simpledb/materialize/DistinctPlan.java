@@ -82,4 +82,9 @@ public class DistinctPlan implements Plan {
    public Schema schema() {
       return p.schema();
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+      return planLine(indentation, "Distinct [" + String.join(", ", schema().fields()) + "]") + p.subtreeString(indentation + 1);
+   }
 }

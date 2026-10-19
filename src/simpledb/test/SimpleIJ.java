@@ -45,6 +45,10 @@ public class SimpleIJ {
       Scan s = null;
       try {
          Plan plan = planner.createQueryPlan(cmd, tx);
+
+         System.out.println("Query plan:");
+         System.out.print(plan.subtreeString(0) + "\n");
+
          s = plan.open();
 
          int numcols = plan.schema().fields().size();

@@ -26,4 +26,9 @@ public class OrderPair {
     public boolean isDesc() {
         return desc;
     }
+
+    @Override
+    public String toString() {
+        return fldname + (desc ? " desc" : " asc");
+    }
 }

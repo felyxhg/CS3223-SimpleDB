@@ -70,4 +70,9 @@ public class TablePlan implements Plan {
    public Schema schema() {
       return layout.schema();
    }
+
+   @Override
+   public String subtreeString(int indentation) {
+       return planLine(indentation, "Table [" + tblname + "]");
+   }
 }
