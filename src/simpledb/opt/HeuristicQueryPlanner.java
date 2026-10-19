@@ -31,6 +31,7 @@ public class HeuristicQueryPlanner implements QueryPlanner {
     * results in the smallest output.
     */
    public Plan createPlan(QueryData data, Transaction tx) {
+      tableplanners.clear();
       
       // Step 1:  Create a TablePlanner object for each mentioned table
       for (String tblname : data.tables()) {
