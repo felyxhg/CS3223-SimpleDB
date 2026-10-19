@@ -42,9 +42,10 @@ public class SimpleIJ {
    }
 
    private static void doQuery(Planner planner, Transaction tx, String cmd) {
+      Scan s = null;
       try {
          Plan plan = planner.createQueryPlan(cmd, tx);
-         Scan s = plan.open();
+         s = plan.open();
 
          int numcols = plan.schema().fields().size();
          int totalwidth = 0;
@@ -80,6 +81,11 @@ public class SimpleIJ {
       }
       catch (Exception e) {
          e.printStackTrace();
+      }
+      finally {
+         if (s != null) {
+            s.close();
+         }
       }
    }
 
