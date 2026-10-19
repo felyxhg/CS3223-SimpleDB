@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import simpledb.materialize.MergeJoinPlan;
+import simpledb.materialize.HashJoinPlan;
 import simpledb.tx.Transaction;
 import simpledb.record.*;
 import simpledb.query.*;
@@ -71,11 +72,12 @@ class TablePlanner {
          return null;
       Plan p1 = makeIndexJoin(current, currsch);
       Plan p2 = makeSortMergeJoin(current, currsch);
+      Plan p3 = makeHashJoin(current, currsch);
 //      Plan p3 = makeProductJoin(current, currsch);
       Plan p4 = makeNestedLoopJoinPlan(current, joinpred);
 
       Plan bestplan = null;
-      for (Plan p : Arrays.asList(p1, p2, p4)) {
+      for (Plan p : Arrays.asList(p1, p2, p3, p4)) {
          if (bestplan == null || (p != null && p.blocksAccessed() < bestplan.blocksAccessed())) {
             bestplan = p;
          }
@@ -131,6 +133,18 @@ class TablePlanner {
          if (outerfield != null && currsch.hasField(outerfield)) {
             Plan p = addSelectPred(myplan);
             p = new MergeJoinPlan(tx, current, p, outerfield, fldname);
+            return addJoinPred(p, currsch);
+         }
+      }
+      return null;
+   }
+
+   private Plan makeHashJoin(Plan current, Schema currsch) {
+      for (String fldname : myschema.fields()) {
+         String outerfield = mypred.equatesWithField(fldname);
+         if (outerfield != null && currsch.hasField(outerfield)) {
+            Plan p = addSelectPred(myplan);
+            p = new HashJoinPlan(current, p, outerfield, fldname);
             return addJoinPred(p, currsch);
          }
       }

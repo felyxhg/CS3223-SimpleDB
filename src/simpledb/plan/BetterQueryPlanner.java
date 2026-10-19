@@ -1,6 +1,7 @@
 package simpledb.plan;
 
 import java.util.*;
+import simpledb.materialize.GroupByPlan;
 import simpledb.tx.Transaction;
 import simpledb.metadata.*;
 import simpledb.parse.*;
@@ -49,6 +50,9 @@ public class BetterQueryPlanner implements QueryPlanner {
       
       //Step 3: Add a selection plan for the predicate
       p = new SelectPlan(p, data.pred());
+
+      if (!data.aggfns().isEmpty() || !data.groupfields().isEmpty())
+         p = new GroupByPlan(tx, p, data.groupfields(), data.aggfns());
       
       //Step 4: Project on the field names
       p = new ProjectPlan(p, data.fields());
