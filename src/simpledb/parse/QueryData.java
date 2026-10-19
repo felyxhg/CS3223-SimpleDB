@@ -17,16 +17,17 @@ public class QueryData {
    private List<String> groupfields;
    private List<AggregationFn> aggfns;
    private List<String> selectexpressions;
+   private boolean isDistinct;
    
    /**
     * Saves the field and table list and predicate and order.
     */
    public QueryData(List<String> fields, Collection<String> tables, Predicate pred, Order order) {
-      this(fields, tables, pred, order, Collections.emptyList(), Collections.emptyList(), fields);
+      this(fields, tables, pred, order, Collections.emptyList(), Collections.emptyList(), fields, false);
    }
 
    public QueryData(List<String> fields, Collection<String> tables, Predicate pred, Order order,
-         List<String> groupfields, List<AggregationFn> aggfns, List<String> selectexpressions) {
+         List<String> groupfields, List<AggregationFn> aggfns, List<String> selectexpressions, boolean isDistinct) {
       this.fields = fields;
       this.tables = tables;
       this.pred = pred;
@@ -34,6 +35,7 @@ public class QueryData {
       this.groupfields = groupfields;
       this.aggfns = aggfns;
       this.selectexpressions = selectexpressions;
+      this.isDistinct = isDistinct;
    }
    
    /**
@@ -77,9 +79,13 @@ public class QueryData {
    public List<AggregationFn> aggfns() {
       return aggfns;
    }
+
+   public boolean isDistinct() { return isDistinct; }
    
    public String toString() {
       String result = "select ";
+      if (isDistinct)
+         result += "distinct ";
       for (String expression : selectexpressions)
          result += expression + ", ";
       result = result.substring(0, result.length()-2); //remove final comma

@@ -1,6 +1,8 @@
 package simpledb.plan;
 
 import java.util.*;
+
+import simpledb.materialize.DistinctPlan;
 import simpledb.materialize.GroupByPlan;
 import simpledb.tx.Transaction;
 import simpledb.metadata.*;
@@ -56,6 +58,9 @@ public class BetterQueryPlanner implements QueryPlanner {
       
       //Step 4: Project on the field names
       p = new ProjectPlan(p, data.fields());
+      if (data.isDistinct()) {
+          p = new DistinctPlan(tx, p);
+      }
       return p;
    }
 }
