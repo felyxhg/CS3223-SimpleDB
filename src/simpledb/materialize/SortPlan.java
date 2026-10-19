@@ -50,8 +50,6 @@ public class SortPlan implements Plan {
     * Return the number of blocks in the sorted table,
     * which is the same as it would be in a
     * materialized table.
-    * It does <i>not</i> include the one-time cost
-    * of materializing and sorting the records.
     * @see simpledb.plan.Plan#blocksAccessed()
     */
    public int blocksAccessed() {
