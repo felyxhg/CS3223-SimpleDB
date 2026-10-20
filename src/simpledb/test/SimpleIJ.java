@@ -13,6 +13,14 @@ import simpledb.opt.HeuristicQueryPlanner;
 import java.sql.*;
 import java.util.Scanner;
 
+/**
+ * An interactive SQL client that calls the planner directly.
+ * The database directory can be passed as program argument
+ * (default "studentdb"). Every command runs in its own transaction.
+ * Besides SQL statements, the client supports the commands
+ * "joins" to restrict the join methods of the optimizer and
+ * "time" to measure the execution time of a query.
+ */
 public class SimpleIJ {
    public static void main(String[] args) {
       try {
@@ -99,6 +107,12 @@ public class SimpleIJ {
       }
    }
 
+   /**
+    * Sets the join methods the optimizer may use.
+    * The command is followed by any of index, merge, hash,
+    * nested or all. The current setting is printed.
+    * @param cmd the joins command
+    */
    private static void setJoinMethods(String cmd) {
       String methods = cmd.substring(5);
       boolean all = methods.contains("all");
@@ -112,6 +126,15 @@ public class SimpleIJ {
               + ", nested=" + HeuristicQueryPlanner.nestedLoopJoinEnabled);
    }
 
+   /**
+    * Prints the query plan of the specified query and measures
+    * the time to open its scan and read all records.
+    * The records are not printed, since printing would
+    * dominate the measured time.
+    * @param planner the planner
+    * @param tx the calling transaction
+    * @param cmd the query
+    */
    private static void doTimedQuery(Planner planner, Transaction tx, String cmd) {
       Scan s = null;
       try {

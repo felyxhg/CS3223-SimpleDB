@@ -19,7 +19,7 @@ public class SortPlan implements Plan {
    /**
     * Create a sort plan for the specified query.
     * @param p the plan for the underlying query
-    * @param order the fields to sort by
+    * @param order the fields to sort by, each with its sort direction
     * @param tx the calling transaction
     */
    public SortPlan(Transaction tx, Plan p, Order order) {
@@ -47,9 +47,11 @@ public class SortPlan implements Plan {
    }
    
    /**
-    * Return the number of blocks in the sorted table,
-    * which is the same as it would be in a
-    * materialized table.
+    * Return the number of blocks accessed by the sort,
+    * which is the number of blocks of the underlying query
+    * plus the number of blocks in the sorted table.
+    * It does <i>not</i> include the cost of the
+    * merge iterations.
     * @see simpledb.plan.Plan#blocksAccessed()
     */
    public int blocksAccessed() {

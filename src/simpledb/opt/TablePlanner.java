@@ -57,11 +57,13 @@ class TablePlanner {
    
    /**
     * Constructs a join plan of the specified plan
-    * and the table.  The plan will use an indexjoin, sort-merge join
-    * or product join based on the minimum of accessed blocks.
-    * (Which means that if an indexselect is also possible,
-    * the indexjoin operator takes precedence.)
-    * The method returns null if no join is possible.
+    * and the table. A candidate plan is created for every
+    * enabled join method (index join, sort-merge join,
+    * hash join and nested loops join), and the candidate with
+    * the lowest number of accessed blocks is chosen.
+    * If none of the enabled join methods is applicable,
+    * a nested loops join is used.
+    * The method returns null if there is no join predicate.
     * @param current the specified plan
     * @return a join plan of the plan and this table
     */
@@ -100,6 +102,14 @@ class TablePlanner {
       return new MultibufferProductPlan(tx, current, p);
    }
 
+   /**
+    * Constructs a nested loops join plan of the specified plan
+    * and this table. The selection predicate of the table
+    * is applied before the join.
+    * @param current the specified plan
+    * @param predicate the join predicate
+    * @return a nested loops join plan of the plan and this table
+    */
    public Plan makeNestedLoopJoinPlan(Plan current, Predicate predicate) {
       Plan p = addSelectPred(myplan);
       return new NestedLoopJoinPlan(current, p, predicate);
@@ -129,6 +139,14 @@ class TablePlanner {
       return null;
    }
 
+   /**
+    * Constructs a sort-merge join plan of the specified plan
+    * and this table, if a field of the table is equated
+    * with a field of the plan.
+    * @param current the specified plan
+    * @param currsch the schema of the plan
+    * @return a sort-merge join plan, or null if no such join is possible
+    */
    private Plan makeSortMergeJoin(Plan current, Schema currsch) {
       for (String fldname : myschema.fields()) {
          String outerfield = mypred.equatesWithField(fldname);
@@ -141,6 +159,14 @@ class TablePlanner {
       return null;
    }
 
+   /**
+    * Constructs a hash join plan of the specified plan
+    * and this table, if a field of the table is equated
+    * with a field of the plan.
+    * @param current the specified plan
+    * @param currsch the schema of the plan
+    * @return a hash join plan, or null if no such join is possible
+    */
    private Plan makeHashJoin(Plan current, Schema currsch) {
       for (String fldname : myschema.fields()) {
          String outerfield = mypred.equatesWithField(fldname);

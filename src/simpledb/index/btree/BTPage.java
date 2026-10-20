@@ -107,6 +107,8 @@ public class BTPage {
    /**
     * Append a new block to the end of the specified B-tree file,
     * having the specified flag value.
+    * The block is unpinned after it has been formatted,
+    * so that no buffer stays pinned.
     * @param flag the initial value of the flag
     * @return a reference to the newly-created block
     */

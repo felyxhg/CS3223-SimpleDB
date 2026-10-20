@@ -20,12 +20,24 @@ public class QueryData {
    private boolean isDistinct;
    
    /**
-    * Saves the field and table list and predicate and order.
+    * Saves the field and table list, the predicate and the order
+    * of a query without group by, aggregation functions and distinct.
     */
    public QueryData(List<String> fields, Collection<String> tables, Predicate pred, Order order) {
       this(fields, tables, pred, order, Collections.emptyList(), Collections.emptyList(), fields, false);
    }
 
+   /**
+    * Saves all parts of a select statement.
+    * @param fields the output fields of the select list
+    * @param tables the tables of the from clause
+    * @param pred the predicate of the where clause
+    * @param order the order of the order by clause
+    * @param groupfields the fields of the group by clause
+    * @param aggfns the aggregation functions of the select list
+    * @param selectexpressions the original text of each entry of the select list
+    * @param isDistinct true if the query removes duplicate records
+    */
    public QueryData(List<String> fields, Collection<String> tables, Predicate pred, Order order,
          List<String> groupfields, List<AggregationFn> aggfns, List<String> selectexpressions, boolean isDistinct) {
       this.fields = fields;
@@ -72,14 +84,26 @@ public class QueryData {
       return order;
    }
 
+   /**
+    * Returns the fields mentioned in the group by clause.
+    * @return a list of field names
+    */
    public List<String> groupfields() {
       return groupfields;
    }
 
+   /**
+    * Returns the aggregation functions of the select clause.
+    * @return a list of aggregation functions
+    */
    public List<AggregationFn> aggfns() {
       return aggfns;
    }
 
+   /**
+    * Returns true if the query removes duplicate records.
+    * @return true if the select clause contains distinct
+    */
    public boolean isDistinct() { return isDistinct; }
    
    public String toString() {

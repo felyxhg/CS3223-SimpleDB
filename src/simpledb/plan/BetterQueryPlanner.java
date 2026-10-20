@@ -20,9 +20,11 @@ public class BetterQueryPlanner implements QueryPlanner {
    }
    
    /**
-    * Creates a query plan as follows.  It first takes
+    * Creates a query plan as follows. It first takes
     * the product of all tables and views; it then selects on the predicate;
-    * and finally it projects on the field list. 
+    * it groups the records if the query has a group by clause
+    * or aggregation functions; it projects on the field list;
+    * and finally it removes duplicates for a distinct query.
     */
    public Plan createPlan(QueryData data, Transaction tx) {
       //Step 1: Create a plan for each mentioned table or view.

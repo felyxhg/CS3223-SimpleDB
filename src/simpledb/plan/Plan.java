@@ -47,11 +47,13 @@ public interface Plan {
    public Schema schema();
 
    /**
-    * Returns a query plan string of the subtree
-    * @param indentation indentation depth of the string in the total plan string
-    * @return String representation of plan of the subtree
+    * Returns the query plan of the subtree rooted at this node.
+    * The string contains one line for this node, followed by
+    * the lines of its child plans with one more level of indentation.
+    * @param indentation the indentation depth of this node in the query plan
+    * @return the query plan of the subtree
     */
-   public String  subtreeString(int indentation);
+   public String subtreeString(int indentation);
 
    /**
     * Returns one line of the query plan string,

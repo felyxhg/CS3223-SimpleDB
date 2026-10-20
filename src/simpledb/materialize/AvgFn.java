@@ -5,8 +5,6 @@ import simpledb.query.Scan;
 
 /**
  * The <i>average</i> aggregation function.
- * 
- * @author Edward Sciore
  */
 public class AvgFn implements AggregationFn {
 	private String fldname;
@@ -51,8 +49,8 @@ public class AvgFn implements AggregationFn {
 	}
 
 	/**
-	 * Return the field's name, prepended by "averageof".
-	 * 
+	 * Return the field's name, prepended by "avgof".
+	 *
 	 * @see simpledb.materialize.AggregationFn#fieldName()
 	 */
 	public String fieldName() {
@@ -60,8 +58,9 @@ public class AvgFn implements AggregationFn {
 	}
 
 	/**
-	 * Return the current average.
-	 * 
+	 * Return the current average. Since SimpleDB only supports
+	 * integer values, the average is rounded down to an integer.
+	 *
 	 * @see simpledb.materialize.AggregationFn#value()
 	 */
 	public Constant value() {

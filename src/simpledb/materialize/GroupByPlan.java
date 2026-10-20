@@ -99,6 +99,8 @@ public class GroupByPlan implements Plan {
     * Returns the schema of the output table.
     * The schema consists of the group fields,
     * plus one field for each aggregation function.
+    * The fields of MIN and MAX have the type of their
+    * input field, all other aggregation fields are integers.
     * @see simpledb.plan.Plan#schema()
     */
    public Schema schema() {

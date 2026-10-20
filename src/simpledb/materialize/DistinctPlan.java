@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * The Plan class for the <i>distinct</i> operator.
- * @author Edward Sciore
  */
 public class DistinctPlan implements Plan {
    private Plan p;

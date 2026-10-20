@@ -1,18 +1,19 @@
 package simpledb.query;
 
 /**
- * The scan class corresponding to the <i>product</i> relational
- * algebra operator.
- * @author Edward Sciore
+ * The scan class corresponding to the <i>nested loops join</i>
+ * operator.
  */
 public class NestedLoopJoinScan implements Scan {
    private Scan s1, s2;
    private Predicate predicate;
 
    /**
-    * Create a product scan having the two underlying scans.
-    * @param s1 the LHS scan
-    * @param s2 the RHS scan
+    * Create a nested loops join scan having the two underlying scans
+    * and the join predicate.
+    * @param s1 the LHS (outer) scan
+    * @param s2 the RHS (inner) scan
+    * @param predicate the join predicate
     */
    public NestedLoopJoinScan(Scan s1, Scan s2, Predicate predicate) {
       this.s1 = s1;
@@ -35,11 +36,10 @@ public class NestedLoopJoinScan implements Scan {
    }
 
    /**
-    * Move the scan to the next record.
-    * The method moves to the next RHS record, if possible.
-    * Otherwise, it moves to the next LHS record and the
-    * first RHS record.
-    * If there are no more LHS records, the method returns false.
+    * Move the scan to the next pair of records
+    * that satisfies the join predicate.
+    * Pairs that do not satisfy the predicate are skipped.
+    * If there are no more pairs, the method returns false.
     * @see Scan#next()
     */
    public boolean next() {
@@ -52,6 +52,13 @@ public class NestedLoopJoinScan implements Scan {
       return false;
    }
 
+   /**
+    * Move to the next pair of records, as in a product.
+    * The method moves to the next RHS record, if possible.
+    * Otherwise, it moves to the next LHS record and the
+    * first RHS record.
+    * @return false if there are no more pairs
+    */
    private boolean nextPair() {
       if (s2.next())
          return true;

@@ -11,6 +11,11 @@ import java.util.List;
  *
  */
 public class Term {
+   /**
+    * The comparison operators supported in a term.
+    * Each operator stores the strings by which it
+    * can be written in an SQL statement.
+    */
    public enum Operator {
       EQUAL(List.of("=")),
       NOT_EQUAL(List.of("!=", "<>")),
@@ -21,10 +26,20 @@ public class Term {
 
       private List<String> operatorStrings;
 
+      /**
+       * Create an operator that can be written
+       * as any of the specified strings.
+       * @param operatorStrings the SQL strings of the operator
+       */
       private Operator(List<String> operatorStrings) {
          this.operatorStrings = operatorStrings;
       }
 
+      /**
+       * Returns the strings by which the operator
+       * can be written in an SQL statement.
+       * @return the list of operator strings
+       */
       public List<String> getOperatorStrings() {
          return operatorStrings;
       }
@@ -56,13 +71,13 @@ public class Term {
       this.rhs = rhs;
       this.operator = operator;
    }
-   
+
    /**
-    * Return true if both of the term's expressions
-    * evaluate to the same constant,
+    * Return true if the values of the term's expressions
+    * satisfy the term's comparison operator,
     * with respect to the specified scan.
     * @param s the scan
-    * @return true if both expressions have the same value in the scan
+    * @return true if the comparison holds for the current record of the scan
     */
    public boolean isSatisfied(Scan s) {
       Constant lhsval = lhs.evaluate(s);

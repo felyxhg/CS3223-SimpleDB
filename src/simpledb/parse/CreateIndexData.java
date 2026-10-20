@@ -9,9 +9,9 @@ import simpledb.index.IndexType;
 public class CreateIndexData {
    private String idxname, tblname, fldname;
    private IndexType indexType;
-   
+
    /**
-    * Saves the table and field names of the specified index.
+    * Saves the table and field names and the type of the specified index.
     */
    public CreateIndexData(String idxname, String tblname, String fldname, IndexType indexType) {
       this.idxname = idxname;

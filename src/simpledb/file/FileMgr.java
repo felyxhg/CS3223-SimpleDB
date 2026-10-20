@@ -7,6 +7,15 @@ public class FileMgr {
    private File dbDirectory;
    private int blocksize;
    private boolean isNew;
+   /**
+    * The open files, ordered by their last access.
+    * At most MAX_OPEN_FILES files are open at the same time.
+    * When the limit is exceeded, the least recently used file
+    * is closed. It is reopened when it is accessed again.
+    * This is necessary because sorting creates thousands of
+    * temporary tables, which would otherwise exhaust the
+    * file handles of the process.
+    */
    private static final int MAX_OPEN_FILES = 100;
    private Map<String,RandomAccessFile> openFiles = new LinkedHashMap<>(16, 0.75f, true) {
       protected boolean removeEldestEntry(Map.Entry<String,RandomAccessFile> eldest) {

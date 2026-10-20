@@ -17,6 +17,10 @@ import simpledb.plan.*;
 public class HeuristicQueryPlanner implements QueryPlanner {
    private Collection<TablePlanner> tableplanners = new ArrayList<>();
    private MetadataMgr mdm;
+   /**
+    * Flags that restrict the join methods supported by the optimizer.
+    * They are set by the joins command of SimpleIJ for the experiments.
+    */
    public static boolean indexJoinEnabled = true;
    public static boolean mergeJoinEnabled = true;
    public static boolean hashJoinEnabled = true;
@@ -33,6 +37,12 @@ public class HeuristicQueryPlanner implements QueryPlanner {
     * to be first in the join order.
     * H2. Add the table to the join order which
     * results in the smallest output.
+    * If the query has a group by clause or aggregation functions,
+    * a group by node is added above the joins. The plan then
+    * projects on the output fields. A distinct query adds a
+    * distinct node, which also sorts the output by the order by
+    * clause. Otherwise a sort node is added if the query has
+    * an order by clause.
     */
    public Plan createPlan(QueryData data, Transaction tx) {
       tableplanners.clear();

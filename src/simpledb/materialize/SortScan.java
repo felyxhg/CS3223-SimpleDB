@@ -133,6 +133,8 @@ public class SortScan implements Scan {
    /**
     * Save the position of the current record,
     * so that it can be restored at a later time.
+    * Besides the positions of both runs, the current run and
+    * whether each run has more records are saved as well.
     */
    public void savePosition() {
       RID rid1 = s1.getRid();
@@ -144,7 +146,8 @@ public class SortScan implements Scan {
    }
    
    /**
-    * Move the scan to its previously-saved position.
+    * Move the scan to its previously-saved position
+    * and restore the saved state of both runs.
     */
    public void restorePosition() {
       RID rid1 = savedposition.get(0);

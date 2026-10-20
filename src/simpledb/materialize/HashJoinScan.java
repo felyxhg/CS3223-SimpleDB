@@ -11,8 +11,6 @@ import simpledb.record.Schema;
 
 /**
  * The Scan class for the <i>hashjoin</i> operator.
- * 
- * @author Edward Sciore
  */
 public class HashJoinScan implements Scan {
 	private Map<Constant, List<Map<String, Constant>>> hashTable;
@@ -26,13 +24,13 @@ public class HashJoinScan implements Scan {
 	/**
 	 * Create a hashjoin scan using the hash table built from one input and the
 	 * other input as the probe scan.
-	 * 
-	 * @param hashTable
-	 * @param probe
-	 * @param probeField
-	 * @param buildSchema
-	 * @param probeSchema
-	 * @param buildIsLeft
+	 *
+	 * @param hashTable   the hash table of the build input
+	 * @param probe       the scan of the probe input
+	 * @param probeField  the join field of the probe input
+	 * @param buildSchema the schema of the build input
+	 * @param probeSchema the schema of the probe input
+	 * @param buildIsLeft true if the build input is the left input of the join
 	 */
 	public HashJoinScan(Map<Constant, List<Map<String, Constant>>> hashTable, Scan probe, String probeField,
 			Schema buildSchema, Schema probeSchema, boolean buildIsLeft) {

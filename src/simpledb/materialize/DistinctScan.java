@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * The Scan class for the <i>distinct</i> operator.
- * @author Edward Sciore
  */
 public class DistinctScan implements Scan {
    private Scan s;

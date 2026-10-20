@@ -6,6 +6,15 @@ import simpledb.plan.Planner;
 import simpledb.server.SimpleDB;
 import simpledb.tx.Transaction;
 
+/**
+ * Creates the database studentdb_large for the experiments.
+ * It has the same schema as the student database, but contains
+ * 10 departments, 50 courses, 200 sections, 1000 students
+ * and 5000 enrollments. The values are generated with a fixed
+ * random seed, so the data is the same on every run.
+ * The indexes allow every join of the experiment queries
+ * to be executed as index join.
+ */
 public class CreateLargeStudentDB {
     private static final int NUM_DEPTS = 10;
     private static final int NUM_COURSES = 50;

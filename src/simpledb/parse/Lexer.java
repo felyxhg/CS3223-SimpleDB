@@ -87,8 +87,11 @@ public class Lexer {
    }
 
    /**
-    * Throws an exception if the operator is not supported
-    * Otherwise, moves to the next token.
+    * Throws an exception if the current tokens do not
+    * form a supported comparison operator.
+    * Otherwise, returns the operator and moves past its tokens.
+    * An operator consists of up to two characters, such as "<=" or "<>".
+    * @return the comparison operator
     */
    public Term.Operator eatOperator() {
       String op = "";
@@ -108,10 +111,22 @@ public class Lexer {
       throw new BadSyntaxException();
    }
 
+   /**
+    * Returns true if the specified token is a character
+    * that can be part of a comparison operator.
+    * @param t the type of the current token
+    * @return true if the character can be part of an operator
+    */
    private boolean isOperatorChar(int t) {
       return t == '=' || t == '<' || t == '>' || t == '!';
    }
 
+   /**
+    * Throws an exception if the current token is not
+    * one of the index types "hash" or "btree".
+    * Otherwise, returns the index type and moves to the next token.
+    * @return the type of the index
+    */
    public IndexType eatIndexType() {
       if (matchKeyword("hash")) {
          eatKeyword("hash");

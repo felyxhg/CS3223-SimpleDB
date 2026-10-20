@@ -45,9 +45,11 @@ public class IndexInfo {
       this.si = si;
       this.indexType = indexType;
    }
-   
+
    /**
-    * Open the index described by this obFject.
+    * Open the index described by this object.
+    * Depending on the index type, a hash index
+    * or a B-tree index is opened.
     * @return the Index object associated with this information
     */
    public Index open() {
@@ -120,10 +122,18 @@ public class IndexInfo {
       return new Layout(sch);
    }
 
+   /**
+    * Returns the name of the indexed field.
+    * @return the name of the indexed field
+    */
    public String getFieldName() {
       return fldname;
    }
 
+   /**
+    * Returns the type of the index.
+    * @return the type of the index
+    */
    public IndexType getIndexType() {
       return indexType;
    }

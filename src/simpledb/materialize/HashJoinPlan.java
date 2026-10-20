@@ -12,8 +12,6 @@ import simpledb.record.Schema;
 
 /**
  * The Plan class for the <i>hashjoin</i> operator.
- * 
- * @author Edward Sciore
  */
 public class HashJoinPlan implements Plan {
 	private Plan p1, p2;
@@ -56,14 +54,14 @@ public class HashJoinPlan implements Plan {
 	}
 
 	/**
-	 * Reads the input into a hash table keyed by its join field, copying each row.
-	 * Closes the input scan before returning the table.
-	 * 
-	 * @param plan
-	 * @param joinField
+	 * Reads the input into a hash table keyed by its join field,
+	 * copying each record. Closes the input scan before
+	 * returning the table.
 	 *
+	 * @param plan      the input to build the hash table from
+	 * @param joinField the join field of the input
+	 * @return the hash table, mapping each join value to its records
 	 */
-
 	private Map<Constant, List<Map<String, Constant>>> buildHashTable(Plan plan, String joinField) {
 		Map<Constant, List<Map<String, Constant>>> table = new HashMap<>();
 		Scan scan = plan.open();
@@ -81,11 +79,11 @@ public class HashJoinPlan implements Plan {
 	}
 
 	/**
-	 * Return the number of block accesses required to hashjoin the tables. Since a
-	 * hashjoin can be performed with a single pass through each table, the method
-	 * returns the sum of the block accesses of the materialized tables. It does
-	 * <i>not</i> include the one-time cost of materializing the records.
-	 * 
+	 * Return the number of block accesses required to hashjoin the tables.
+	 * Since the hash table is kept in memory, each input is read
+	 * only once, so the method returns the sum of the block
+	 * accesses of the two inputs.
+	 *
 	 * @see simpledb.plan.Plan#blocksAccessed()
 	 */
 	public int blocksAccessed() {

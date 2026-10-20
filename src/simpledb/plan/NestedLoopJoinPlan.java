@@ -5,20 +5,20 @@ import simpledb.query.Predicate;
 import simpledb.query.Scan;
 import simpledb.record.Schema;
 
-/** The Plan class corresponding to the <i>product</i>
-  * relational algebra operator.
-  * @author Edward Sciore
-  */
+/**
+ * The Plan class for the <i>nested loops join</i> operator.
+ */
 public class NestedLoopJoinPlan implements Plan {
    private Plan p1, p2;
    private Predicate predicate;
    private Schema schema = new Schema();
 
    /**
-    * Creates a new product node in the query tree,
-    * having the two specified subqueries.
-    * @param p1 the left-hand subquery
-    * @param p2 the right-hand subquery
+    * Creates a new nested loops join node in the query tree,
+    * having the two specified subqueries and the join predicate.
+    * @param p1 the left-hand (outer) subquery
+    * @param p2 the right-hand (inner) subquery
+    * @param predicate the join predicate
     */
    public NestedLoopJoinPlan(Plan p1, Plan p2, Predicate predicate) {
       this.p1 = p1;
@@ -29,7 +29,7 @@ public class NestedLoopJoinPlan implements Plan {
    }
    
    /**
-    * Creates a product scan for this query.
+    * Creates a nested loops join scan for this query.
     * @see Plan#open()
     */
    public Scan open() {
@@ -39,9 +39,10 @@ public class NestedLoopJoinPlan implements Plan {
    }
    
    /**
-    * Estimates the number of block accesses in the product.
+    * Estimates the number of block accesses in the join.
+    * The inner query is read once for every record of the outer query.
     * The formula is:
-    * <pre> B(product(p1,p2)) = B(p1) + R(p1)*B(p2) </pre>
+    * <pre> B(join(p1,p2)) = B(p1) + R(p1)*B(p2) </pre>
     * @see Plan#blocksAccessed()
     */
    public int blocksAccessed() {
@@ -49,9 +50,10 @@ public class NestedLoopJoinPlan implements Plan {
    }
    
    /**
-    * Estimates the number of output records in the product.
+    * Estimates the number of output records in the join,
+    * which is the size of the product reduced by the join predicate.
     * The formula is:
-    * <pre> R(product(p1,p2)) = R(p1)*R(p2) </pre>
+    * <pre> R(join(p1,p2)) = R(p1)*R(p2) / reductionFactor(predicate) </pre>
     * @see Plan#recordsOutput()
     */
    public int recordsOutput() {
@@ -59,8 +61,8 @@ public class NestedLoopJoinPlan implements Plan {
    }
    
    /**
-    * Estimates the distinct number of field values in the product.
-    * Since the product does not increase or decrease field values,
+    * Estimates the distinct number of field values in the join.
+    * Since the join does not increase or decrease field values,
     * the estimate is the same as in the appropriate underlying query.
     * @see Plan#distinctValues(String)
     */
@@ -72,7 +74,7 @@ public class NestedLoopJoinPlan implements Plan {
    }
    
    /**
-    * Returns the schema of the product,
+    * Returns the schema of the join,
     * which is the union of the schemas of the underlying queries.
     * @see Plan#schema()
     */

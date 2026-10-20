@@ -12,9 +12,10 @@ public class RecordComparator implements Comparator<Scan> {
    private Order order;
    
    /**
-    * Create a comparator using the specified fields,
-    * using the ordering implied by its iterator.
-    * @param order a list of field names
+    * Create a comparator using the specified order.
+    * The pairs of the order are compared in turn,
+    * each in its own direction.
+    * @param order the order to compare by
     */
    public RecordComparator(Order order) {
       this.order = order;
@@ -22,15 +23,16 @@ public class RecordComparator implements Comparator<Scan> {
    
    /**
     * Compare the current records of the two specified scans.
-    * The sort fields are considered in turn.
+    * The pairs of the order are considered in turn.
     * When a field is encountered for which the records have
     * different values, those values are used as the result
-    * of the comparison.
+    * of the comparison. The result is negated
+    * if the pair is sorted in descending order.
     * If the two records have the same values for all
-    * sort fields, then the method returns 0.
+    * fields of the order, then the method returns 0.
     * @param s1 the first scan
     * @param s2 the second scan
-    * @return the result of comparing each scan's current record according to the field list
+    * @return the result of comparing each scan's current record according to the order
     */
    public int compare(Scan s1, Scan s2) {
       for (OrderPair pair : order.getPairs()) {
@@ -48,6 +50,11 @@ public class RecordComparator implements Comparator<Scan> {
       return 0;
    }
 
+   /**
+    * Returns the order of the comparator,
+    * which is used to display the query plan.
+    * @return the string representation of the order
+    */
    @Override
    public String toString() {
       return order.toString();

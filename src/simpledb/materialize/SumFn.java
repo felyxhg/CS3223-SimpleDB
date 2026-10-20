@@ -5,8 +5,6 @@ import simpledb.query.Scan;
 
 /**
  * The <i>sum</i> aggregation function.
- * 
- * @author Edward Sciore
  */
 public class SumFn implements AggregationFn {
 	private String fldname;

@@ -54,6 +54,11 @@ public class Parser {
       return pred;
    }
 
+   /**
+    * Parses a field name followed by an optional
+    * asc or desc keyword. Ascending is the default.
+    * @return the parsed order pair
+    */
    public OrderPair orderPair() {
       String fldname = field();
 
@@ -68,6 +73,10 @@ public class Parser {
       return new OrderPair(fldname, desc);
    }
 
+   /**
+    * Parses a comma-separated list of order pairs.
+    * @return the parsed order
+    */
    public Order order() {
       Order order = new Order(orderPair());
       if (lex.matchDelim(',')) {
@@ -122,6 +131,16 @@ public class Parser {
       return new QueryData(fields, tables, pred, order, groupfields, aggfns, selectexpressions, isDistinct);
    }
 
+   /**
+    * Parses the comma-separated select list. Each entry is either
+    * a field name or an aggregation function applied to a field.
+    * The aggregation functions are added to the specified list,
+    * and the original text of each entry is added to the list
+    * of select expressions.
+    * @param aggfns the list that receives the aggregation functions
+    * @param selectexpressions the list that receives the text of each entry
+    * @return the names of the output fields
+    */
    private List<String> selectList(List<AggregationFn> aggfns, List<String> selectexpressions) {
       List<String> L = new ArrayList<String>();
       if (lex.matchKeyword("sum") || lex.matchKeyword("avg") || lex.matchKeyword("count")
@@ -148,6 +167,12 @@ public class Parser {
       return L;
    }
 
+   /**
+    * Creates the aggregation function with the specified name.
+    * @param fn the name of the function (sum, avg, count, min or max)
+    * @param fldname the aggregated field
+    * @return the aggregation function
+    */
    private AggregationFn createAggregationFn(String fn, String fldname) {
       switch (fn) {
          case "sum": return new SumFn(fldname);
@@ -158,6 +183,13 @@ public class Parser {
       }
    }
 
+   /**
+    * Returns true if the specified field is the output
+    * field of one of the aggregation functions.
+    * @param fldname the name of the field
+    * @param aggfns the aggregation functions of the query
+    * @return true if the field is computed by an aggregation function
+    */
    private boolean isAggregateField(String fldname, List<AggregationFn> aggfns) {
       for (AggregationFn fn : aggfns)
          if (fn.fieldName().equals(fldname))
