@@ -1,0 +1,37 @@
+time select sname, grade from student, enroll where sid = studentid
+joins index
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+joins merge
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+joins hash
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+joins nested
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+time select sname, grade from student, enroll where sid = studentid
+joins index
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+joins merge
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+joins hash
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+joins nested
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+joins all
+time select sname, grade from student, enroll where sid = studentid
+time select sname, title, grade from student, enroll, section, course where sid = studentid and sectionid = sectid and courseid = cid
+exit

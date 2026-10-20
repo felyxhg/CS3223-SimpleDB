@@ -17,10 +17,9 @@ public class SimpleIJ {
    public static void main(String[] args) {
       try {
          // analogous to the driver
-         SimpleDB db = new SimpleDB("studentdb");
+         SimpleDB db = new SimpleDB(args.length > 0 ? args[0] : "studentdb");
 
          // analogous to the connection
-         Transaction tx  = db.newTx();
          Planner planner = db.planner();
 
          Scanner sc = new Scanner(System.in);
@@ -30,7 +29,8 @@ public class SimpleIJ {
             String cmd = sc.nextLine().trim();
             if (cmd.startsWith("exit"))
                break;
-            else if (cmd.startsWith("select"))
+            Transaction tx = db.newTx();
+            if (cmd.startsWith("select"))
                doQuery(planner, tx, cmd);
             else if (cmd.startsWith("joins"))
                setJoinMethods(cmd);
@@ -38,6 +38,7 @@ public class SimpleIJ {
                doTimedQuery(planner, tx, cmd.substring(4).trim());
             else
                doUpdate(planner, tx, cmd);
+            tx.commit();
             System.out.print("\nSQL> ");
          }
       }
