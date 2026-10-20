@@ -114,6 +114,7 @@ public class BTPage {
       BlockId blk = tx.append(currentblk.fileName());
       tx.pin(blk);
       format(blk, flag);
+      tx.unpin(blk);
       return blk;
    }
  

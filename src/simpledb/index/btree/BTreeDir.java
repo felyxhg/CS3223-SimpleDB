@@ -109,7 +109,7 @@ public class BTreeDir {
 
    private BlockId findChildBlock(Constant searchkey) {
       int slot = contents.findSlotBefore(searchkey);
-      if (contents.getDataVal(slot+1).equals(searchkey))
+      if (slot+1 < contents.getNumRecs() && contents.getDataVal(slot+1).equals(searchkey))
          slot++;
       int blknum = contents.getChildNum(slot);
       return new BlockId(filename, blknum);
